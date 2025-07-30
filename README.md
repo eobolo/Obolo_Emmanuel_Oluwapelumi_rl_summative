@@ -179,7 +179,7 @@ Based on the experimental results, **PPO Experiment #3** achieved the best overa
 PPO #3 stands out as the most reliable algorithm for this textbook di
 
 
-**Recommendations for Improvement afetr rendering trained agent**:
+## **Recommendations for Improvement after rendering trained agent**:
 - Revise the reward function to include imbalance penalties and reward incremental progress.
 - Shift to a continuous action space for finer control.
 - Adjust termination to include fixed step limits or “good enough” states.
