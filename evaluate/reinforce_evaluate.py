@@ -1,0 +1,101 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def evaluate_reinforce_model(experiment_number):
+    """
+    Evaluate REINFORCE model and generate graphs based on training logs.
+    
+    Args:
+        experiment_number (int): The experiment number
+    """
+    
+    # Define file paths
+    training_log_file = f"training_log_reinforce_{experiment_number}.csv"
+    log_path = f"logs/{training_log_file}"
+    
+    # Check if log file exists
+    if not os.path.exists(log_path):
+        print(f"ERROR: Log file {log_path} not found!")
+        print("Make sure you have trained the REINFORCE model first.")
+        return
+    
+    # Read the training log
+    print(f"Reading training log: {training_log_file}")
+    log = pd.read_csv(log_path)
+    
+    # Create graphs directory if it doesn't exist
+    os.makedirs("graph", exist_ok=True)
+    
+    # Graph 1: Training Reward Trend
+    plt.figure(figsize=(12, 6))
+    plt.plot(log['timestep'], log['mean_reward_last_100'], 
+             label=f'REINFORCE Experiment {experiment_number} - Mean Reward (Last 100 Episodes)',
+             linewidth=2, color='blue')
+    plt.xlabel('Timestep', fontsize=12)
+    plt.ylabel('Mean Reward', fontsize=12)
+    plt.title(f'REINFORCE Training Reward Trend - Experiment {experiment_number}', fontsize=14, fontweight='bold')
+    plt.legend(fontsize=10)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    # Save reward graph
+    reward_graph_path = f"graph/reinforce_reward_experiment_{experiment_number}.png"
+    plt.savefig(reward_graph_path, dpi=300, bbox_inches='tight')
+    print(f"Reward graph saved: {reward_graph_path}")
+    plt.show()
+    
+    # Graph 2: Training Episode Length Trend
+    plt.figure(figsize=(12, 6))
+    plt.plot(log['timestep'], log['mean_episode_length_last_100'], 
+             label=f'REINFORCE Experiment {experiment_number} - Mean Episode Length (Last 100 Episodes)',
+             linewidth=2, color='green')
+    plt.xlabel('Timestep', fontsize=12)
+    plt.ylabel('Mean Episode Length', fontsize=12)
+    plt.title(f'REINFORCE Training Episode Length Trend - Experiment {experiment_number}', fontsize=14, fontweight='bold')
+    plt.legend(fontsize=10)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    # Save episode length graph
+    episode_graph_path = f"graph/reinforce_episode_length_experiment_{experiment_number}.png"
+    plt.savefig(episode_graph_path, dpi=300, bbox_inches='tight')
+    print(f"Episode length graph saved: {episode_graph_path}")
+    plt.show()
+    
+    # Print summary statistics
+    print(f"\n=== REINFORCE Experiment {experiment_number} Summary ===")
+    print(f"Total timesteps: {log['timestep'].max():,}")
+    print(f"Final mean reward: {log['mean_reward_last_100'].iloc[-1]:.2f}")
+    print(f"Final mean episode length: {log['mean_episode_length_last_100'].iloc[-1]:.2f}")
+    print(f"Best mean reward: {log['mean_reward_last_100'].max():.2f}")
+    print(f"Best mean episode length: {log['mean_episode_length_last_100'].max():.2f}")
+
+def evaluate_all_reinforce_experiments():
+    """Evaluate all REINFORCE experiments."""
+    print("=== REINFORCE Model Evaluation ===")
+    
+    for experiment in range(1, 5):  # Assuming up to 4 experiments for consistency
+        print(f"\n--- Evaluating REINFORCE Experiment {experiment} ---")
+        try:
+            evaluate_reinforce_model(experiment)
+        except Exception as e:
+            print(f"Error evaluating experiment {experiment}: {e}")
+            print("Skipping to next experiment...")
+
+if __name__ == "__main__":
+    # You can run individual experiments or all of them
+    import sys
+    
+    if len(sys.argv) > 1:
+        # Run specific experiment
+        experiment_num = int(sys.argv[1])
+        if 1 <= experiment_num <= 5:
+            evaluate_reinforce_model(experiment_num)
+        else:
+            print("Experiment number must be between 1 and 5")
+    else:
+        # Run all experiments
+        evaluate_all_reinforce_experiments()
