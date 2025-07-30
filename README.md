@@ -56,6 +56,11 @@ python main.py --algorithm actor_critic --experiment 3
 ```bash
 # reload page if it show an error.
 python -m renderer.start_visualization
+
+```
+### Running 2D Visualization
+```bash
+python -m environment.rendering
 ```
 
 ### Project Structure
